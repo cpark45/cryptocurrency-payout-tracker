@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class SpringConfig implements WebMvcConfigurer{
     
-    @Bean(name = "coinGeckoAuthClient")
+    @Bean(name = "webClient")
     public WebClient webClient(WebClient.Builder webClientBuilder) {
         return webClientBuilder.build();
     }

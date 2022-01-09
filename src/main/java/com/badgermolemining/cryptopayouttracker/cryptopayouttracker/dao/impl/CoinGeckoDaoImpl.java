@@ -1,7 +1,9 @@
 package com.badgermolemining.cryptopayouttracker.cryptopayouttracker.dao.impl;
 
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.constants.Constants;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.dao.CoinGeckoDao;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPingResponse;
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,11 +20,17 @@ public class CoinGeckoDaoImpl implements CoinGeckoDao {
     @Value("${coingecko.ping.url}")
     private String coinGeckoPingUrl;
 
-    private final WebClient coinGeckoAuthClient;
+    @Value("${coingecko.coin.url}")
+    private String coinGeckoCoinUrl;
+
+    @Value("${coingecko.history.path}")
+    private String historyPath;
+
+    private final WebClient webClient;
     
     public ResponseEntity<CoinGeckoPingResponse> sendPing() {
 
-        ResponseEntity<CoinGeckoPingResponse> response = coinGeckoAuthClient
+        ResponseEntity<CoinGeckoPingResponse> response = webClient
             .get()
             .uri(coinGeckoPingUrl)
             .header("accept", "application/json")
@@ -31,6 +39,23 @@ public class CoinGeckoDaoImpl implements CoinGeckoDao {
             .block();
 
         return response;
+    }
 
+    public ResponseEntity<CoinGeckoPriceHistoryResponse> getCoinPriceHistoryByDate(String id, String date) {
+
+        String coinGeckoCoinHistoryUrl = String.format("%s/%s/%s", coinGeckoCoinUrl, id, historyPath);
+        String parameters = String.format("?%s=%s&%s=%s", Constants.DATE_PARAMETER, date, 
+                                            Constants.LOCALIZATION_PARAMETER, Constants.LOCALIZATION_VALUE);
+        String coinGeckoCoinHistoryUri = String.format("%s%s", coinGeckoCoinHistoryUrl, parameters);
+
+        ResponseEntity<CoinGeckoPriceHistoryResponse> response = webClient
+            .get()
+            .uri(coinGeckoCoinHistoryUri)
+            .header("accept", "application/json")
+            .retrieve()
+            .toEntity(CoinGeckoPriceHistoryResponse.class)
+            .block();
+
+        return response;
     }
 }
