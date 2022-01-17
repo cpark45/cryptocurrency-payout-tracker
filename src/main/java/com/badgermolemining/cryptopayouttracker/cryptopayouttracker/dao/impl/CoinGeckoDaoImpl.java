@@ -8,12 +8,12 @@ import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CoinGeckoDaoImpl implements CoinGeckoDao {
 
@@ -41,7 +41,17 @@ public class CoinGeckoDaoImpl implements CoinGeckoDao {
         return response;
     }
 
+    /**
+     * Coingecko API limits 50 calls/minute
+     */
     public ResponseEntity<CoinGeckoPriceHistoryResponse> getCoinPriceHistoryByDate(String id, String date) {
+
+        try { // Adding code execution delay to prevent hitting API limit
+            Thread.sleep(1200);
+        }
+        catch (InterruptedException exception) {
+            exception.printStackTrace();
+        }
 
         String coinGeckoCoinHistoryUrl = String.format("%s/%s/%s", coinGeckoCoinUrl, id, historyPath);
         String parameters = String.format("?%s=%s&%s=%s", Constants.DATE_PARAMETER, date, 

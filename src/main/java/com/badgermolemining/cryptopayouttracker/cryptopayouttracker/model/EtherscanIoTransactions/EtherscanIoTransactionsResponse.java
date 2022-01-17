@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class EtherscanIoTransactionsResponse {
     
     private String message;
-    private List<TransactionDetails> result;
+    private List<EthTransactionDetails> result;
 
 }

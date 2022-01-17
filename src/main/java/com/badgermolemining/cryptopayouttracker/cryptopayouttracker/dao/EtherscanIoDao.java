@@ -6,6 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface EtherscanIoDao {
 
-    ResponseEntity<EtherscanIoTransactionsResponse> getEthereumTransactions(String walletAddress);
+    ResponseEntity<EtherscanIoTransactionsResponse> getEthereumTransactions(String walletAddress, String apiKey);
 
 }

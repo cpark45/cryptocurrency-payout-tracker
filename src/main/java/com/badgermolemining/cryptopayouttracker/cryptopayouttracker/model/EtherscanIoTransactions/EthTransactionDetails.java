@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class TransactionDetails {
+public class EthTransactionDetails {
 
-    private String timestamp;
+    private String timeStamp;
     private String value;
     
 }

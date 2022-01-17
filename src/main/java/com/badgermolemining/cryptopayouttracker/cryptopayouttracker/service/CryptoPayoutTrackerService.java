@@ -1,14 +1,11 @@
 package com.badgermolemining.cryptopayouttracker.cryptopayouttracker.service;
 
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPingResponse;
-import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryResponse;
-import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.EtherscanIoTransactions.EtherscanIoTransactionsResponse;
-
-import org.springframework.http.ResponseEntity;
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CryptocurrencyTransactionsResponse;
 
 public interface CryptoPayoutTrackerService {
     
-    ResponseEntity<CoinGeckoPingResponse> sendPing();
-    ResponseEntity<CoinGeckoPriceHistoryResponse> getCoinPriceHistoryByDate();
-    ResponseEntity<EtherscanIoTransactionsResponse> getEthereumTransactions();
+    CoinGeckoPingResponse sendPing();
+    CryptocurrencyTransactionsResponse getEthereumTransactions(String walletAddress, String apiKey);
+    CryptocurrencyTransactionsResponse getChiaTransactions(String walletAddress);
 }
