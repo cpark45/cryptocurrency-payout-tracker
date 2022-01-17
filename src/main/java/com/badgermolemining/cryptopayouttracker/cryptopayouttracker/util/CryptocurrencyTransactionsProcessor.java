@@ -58,7 +58,7 @@ public class CryptocurrencyTransactionsProcessor {
         List<CryptocurrencyTransactionDetails> transactionDetailsList = new ArrayList<CryptocurrencyTransactionDetails>();
 
 
-        for (int i = 0; i < chiaTransactionDetailsList.size(); i++) {
+        for (int i = (chiaTransactionDetailsList.size() - 1); i >= 0 ; i--) {
 
             CryptocurrencyTransactionDetails cryptocurrencyTransactionDetails = new CryptocurrencyTransactionDetails();
 

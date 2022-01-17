@@ -47,7 +47,7 @@ public class CoinGeckoDaoImpl implements CoinGeckoDao {
     public ResponseEntity<CoinGeckoPriceHistoryResponse> getCoinPriceHistoryByDate(String id, String date) {
 
         try { // Adding code execution delay to prevent hitting API limit
-            Thread.sleep(1200);
+            Thread.sleep(1400);
         }
         catch (InterruptedException exception) {
             exception.printStackTrace();
