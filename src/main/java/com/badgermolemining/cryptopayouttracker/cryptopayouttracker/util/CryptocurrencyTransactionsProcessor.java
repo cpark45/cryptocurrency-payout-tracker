@@ -33,8 +33,11 @@ public class CryptocurrencyTransactionsProcessor {
 
             CryptocurrencyTransactionDetails cryptocurrencyTransactionDetails = new CryptocurrencyTransactionDetails();
 
-            String date = EpochToDateConverter.convertEpochToDate(Long.valueOf(ethereumTransactionDetailsList.get(i).getTimeStamp()));
-            BigDecimal marketPrice = getCryptocurrencyPriceByDate(Constants.ETHEREUM, date);
+            String date = EpochToDateConverter.convertEpochToDate(
+                            Long.valueOf(ethereumTransactionDetailsList.get(i).getTimeStamp()), Constants.MONTH_DAY_YEAR);
+            String dateApi = EpochToDateConverter.convertEpochToDate(
+                            Long.valueOf(ethereumTransactionDetailsList.get(i).getTimeStamp()), Constants.DAY_MONTH_YEAR);
+            BigDecimal marketPrice = getCryptocurrencyPriceByDate(Constants.ETHEREUM, dateApi);
             String amountAsString = ethereumTransactionDetailsList.get(i).getValue();
             BigDecimal amount = new BigDecimal(amountAsString).divide(new BigDecimal("1000000000000000000"));
             BigDecimal value = amount.multiply(marketPrice);
@@ -62,8 +65,11 @@ public class CryptocurrencyTransactionsProcessor {
 
             CryptocurrencyTransactionDetails cryptocurrencyTransactionDetails = new CryptocurrencyTransactionDetails();
 
-            String date = EpochToDateConverter.convertEpochToDate(Long.valueOf(chiaTransactionDetailsList.get(i).getTimestamp()));
-            BigDecimal marketPrice = getCryptocurrencyPriceByDate(Constants.CHIA, date);
+            String date = EpochToDateConverter.convertEpochToDate(
+                            Long.valueOf(chiaTransactionDetailsList.get(i).getTimestamp()), Constants.MONTH_DAY_YEAR);
+            String dateApi = EpochToDateConverter.convertEpochToDate(
+                            Long.valueOf(chiaTransactionDetailsList.get(i).getTimestamp()), Constants.DAY_MONTH_YEAR);
+            BigDecimal marketPrice = getCryptocurrencyPriceByDate(Constants.CHIA, dateApi);
             String amountAsString = chiaTransactionDetailsList.get(i).getAmount();
             BigDecimal amount = new BigDecimal(amountAsString).divide(new BigDecimal("1000000000000"));
             BigDecimal value = amount.multiply(marketPrice);

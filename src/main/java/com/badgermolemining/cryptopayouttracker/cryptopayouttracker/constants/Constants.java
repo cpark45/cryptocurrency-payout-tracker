@@ -27,4 +27,8 @@ public class Constants {
     public static final String LIMIT_PARAMETER = "limit";
     public static final Integer LIMIT_VALUE = 25;
     public static final String OFFSET_PARAMETER = "offset";
+
+    // Date Formats
+    public static final String MONTH_DAY_YEAR = "MM-dd-yyyy";
+    public static final String DAY_MONTH_YEAR = "dd-MM-yyyy";
 }
