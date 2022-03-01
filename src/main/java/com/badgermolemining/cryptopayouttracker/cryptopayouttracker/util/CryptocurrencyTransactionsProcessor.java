@@ -8,8 +8,9 @@ import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.constants.Co
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.dao.CoinGeckoDao;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CryptocurrencyTransactionDetails;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CryptocurrencyTransactionsResponse;
-import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryResponse;
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryTimestampResponse;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.EtherscanIoTransactions.EthTransactionDetails;
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.UnixTimestamp.EpochStartEndDay;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.XchscanTransactions.XchscanTransactionDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,12 @@ public class CryptocurrencyTransactionsProcessor {
 
             CryptocurrencyTransactionDetails cryptocurrencyTransactionDetails = new CryptocurrencyTransactionDetails();
 
-            String date = EpochToDateConverter.convertEpochToDate(
+            String date = EpochDateConverter.convertEpochToDate(
                             Long.valueOf(ethereumTransactionDetailsList.get(i).getTimeStamp()), Constants.MONTH_DAY_YEAR);
-            String dateApi = EpochToDateConverter.convertEpochToDate(
-                            Long.valueOf(ethereumTransactionDetailsList.get(i).getTimeStamp()), Constants.DAY_MONTH_YEAR);
-            BigDecimal marketPrice = getCryptocurrencyPriceByDate(Constants.ETHEREUM, dateApi);
+            BigDecimal marketPrice = getCryptocurrencyPriceByFairMarketValue(
+                            Constants.ETHEREUM, Long.valueOf(ethereumTransactionDetailsList.get(i).getTimeStamp()));
             String amountAsString = ethereumTransactionDetailsList.get(i).getValue();
-            BigDecimal amount = new BigDecimal(amountAsString).divide(new BigDecimal("1000000000000000000"));
+            BigDecimal amount = new BigDecimal(amountAsString).divide(Constants.ETH_OFFSET);
             BigDecimal value = amount.multiply(marketPrice);
 
             cryptocurrencyTransactionDetails.setDate(date);
@@ -65,13 +65,12 @@ public class CryptocurrencyTransactionsProcessor {
 
             CryptocurrencyTransactionDetails cryptocurrencyTransactionDetails = new CryptocurrencyTransactionDetails();
 
-            String date = EpochToDateConverter.convertEpochToDate(
+            String date = EpochDateConverter.convertEpochToDate(
                             Long.valueOf(chiaTransactionDetailsList.get(i).getTimestamp()), Constants.MONTH_DAY_YEAR);
-            String dateApi = EpochToDateConverter.convertEpochToDate(
-                            Long.valueOf(chiaTransactionDetailsList.get(i).getTimestamp()), Constants.DAY_MONTH_YEAR);
-            BigDecimal marketPrice = getCryptocurrencyPriceByDate(Constants.CHIA, dateApi);
+            BigDecimal marketPrice = getCryptocurrencyPriceByFairMarketValue(
+                            Constants.CHIA, Long.valueOf(chiaTransactionDetailsList.get(i).getTimestamp()));
             String amountAsString = chiaTransactionDetailsList.get(i).getAmount();
-            BigDecimal amount = new BigDecimal(amountAsString).divide(new BigDecimal("1000000000000"));
+            BigDecimal amount = new BigDecimal(amountAsString).divide(Constants.XCH_OFFSET);
             BigDecimal value = amount.multiply(marketPrice);
 
             cryptocurrencyTransactionDetails.setDate(date);
@@ -87,10 +86,22 @@ public class CryptocurrencyTransactionsProcessor {
         return cryptocurrencyTransactionsResponse;
     }
 
-    private BigDecimal getCryptocurrencyPriceByDate(String id, String date) {
+    private BigDecimal getCryptocurrencyPriceByFairMarketValue(String id, long timestamp) {
 
-        ResponseEntity<CoinGeckoPriceHistoryResponse> response = coinGeckoDao.getCoinPriceHistoryByDate(id, date);
-        return response.getBody().getMarket_data().getCurrent_price().getUsd();
+        EpochStartEndDay epochStartEndDay = getEpochStartEndDay(timestamp);
+        ResponseEntity<CoinGeckoPriceHistoryTimestampResponse> response = 
+            coinGeckoDao.getCoinPriceHistory(id, epochStartEndDay.getStartDayEpoch(), 
+                                                            epochStartEndDay.getEndDayEpoch());
+        String fairMarketValue = getFairMarketValue(response.getBody());
+        return new BigDecimal(fairMarketValue);
+    }
+
+    private EpochStartEndDay getEpochStartEndDay(long timestamp) {
+        return EpochDateConverter.getEpochStartEndDay(timestamp);
+    }
+
+    private String getFairMarketValue(CoinGeckoPriceHistoryTimestampResponse coinGeckoPriceHistoryTimestampResponse) {
+        return FairMarketValueCalculator.getFairMarketValue(coinGeckoPriceHistoryTimestampResponse);
     }
     
 }
