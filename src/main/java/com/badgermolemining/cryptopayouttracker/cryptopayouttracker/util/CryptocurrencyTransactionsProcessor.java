@@ -8,7 +8,7 @@ import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.constants.Co
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.dao.CoinGeckoDao;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CryptocurrencyTransactionDetails;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CryptocurrencyTransactionsResponse;
-import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryTimestampResponse;
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryResponse;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.EtherscanIoTransactions.EthTransactionDetails;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.UnixTimestamp.EpochStartEndDay;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.XchscanTransactions.XchscanTransactionDetails;
@@ -89,7 +89,7 @@ public class CryptocurrencyTransactionsProcessor {
     private BigDecimal getCryptocurrencyPriceByFairMarketValue(String id, long timestamp) {
 
         EpochStartEndDay epochStartEndDay = getEpochStartEndDay(timestamp);
-        ResponseEntity<CoinGeckoPriceHistoryTimestampResponse> response = 
+        ResponseEntity<CoinGeckoPriceHistoryResponse> response = 
             coinGeckoDao.getCoinPriceHistory(id, epochStartEndDay.getStartDayEpoch(), 
                                                             epochStartEndDay.getEndDayEpoch());
         String fairMarketValue = getFairMarketValue(response.getBody());
@@ -100,7 +100,7 @@ public class CryptocurrencyTransactionsProcessor {
         return EpochDateConverter.getEpochStartEndDay(timestamp);
     }
 
-    private String getFairMarketValue(CoinGeckoPriceHistoryTimestampResponse coinGeckoPriceHistoryTimestampResponse) {
+    private String getFairMarketValue(CoinGeckoPriceHistoryResponse coinGeckoPriceHistoryTimestampResponse) {
         return FairMarketValueCalculator.getFairMarketValue(coinGeckoPriceHistoryTimestampResponse);
     }
     

@@ -3,7 +3,7 @@ package com.badgermolemining.cryptopayouttracker.cryptopayouttracker.dao.impl;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.constants.Constants;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.dao.CoinGeckoDao;
 import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPingResponse;
-import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryTimestampResponse;
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ public class CoinGeckoDaoImpl implements CoinGeckoDao {
     /**
      * Coingecko API limits 50 calls/minute
      */
-    public ResponseEntity<CoinGeckoPriceHistoryTimestampResponse> getCoinPriceHistory(String id, String startTimestamp, String endTimestamp) {
+    public ResponseEntity<CoinGeckoPriceHistoryResponse> getCoinPriceHistory(String id, String startTimestamp, String endTimestamp) {
 
         try { // Adding code execution delay to prevent hitting API limit
             Thread.sleep(1400);
@@ -58,12 +58,12 @@ public class CoinGeckoDaoImpl implements CoinGeckoDao {
                                             Constants.FROM_PARAMETER, startTimestamp, Constants.TO_PARAMETER, endTimestamp);
         String coinGeckoCoinHistoryUri = String.format("%s%s", coinGeckoCoinHistoryUrl, parameters);
 
-        ResponseEntity<CoinGeckoPriceHistoryTimestampResponse> response = webClient
+        ResponseEntity<CoinGeckoPriceHistoryResponse> response = webClient
             .get()
             .uri(coinGeckoCoinHistoryUri)
             .header("accept", "application/json")
             .retrieve()
-            .toEntity(CoinGeckoPriceHistoryTimestampResponse.class)
+            .toEntity(CoinGeckoPriceHistoryResponse.class)
             .block();
 
         return response;

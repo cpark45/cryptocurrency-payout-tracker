@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CoinGeckoPriceHistoryTimestampResponse {
+public class CoinGeckoPriceHistoryResponse {
 
     private List<List<String>> prices;
     

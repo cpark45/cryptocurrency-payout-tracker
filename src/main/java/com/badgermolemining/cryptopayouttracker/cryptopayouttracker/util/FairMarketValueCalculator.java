@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryTimestampResponse;
+import com.badgermolemining.cryptopayouttracker.cryptopayouttracker.model.CoinGeckoPriceHistory.CoinGeckoPriceHistoryResponse;
 
 public class FairMarketValueCalculator {
 
-    public static String getFairMarketValue(CoinGeckoPriceHistoryTimestampResponse coinGeckoPriceHistoryTimestampResponse) {
+    public static String getFairMarketValue(CoinGeckoPriceHistoryResponse coinGeckoPriceHistoryTimestampResponse) {
 
         List<List<String>> prices = coinGeckoPriceHistoryTimestampResponse.getPrices();
 
